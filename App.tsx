@@ -385,7 +385,13 @@ const App: React.FC = () => {
           {activeTab === Tab.DASHBOARD && <Dashboard letterTypes={letterTypes} documents={documents} />}
           
           {activeTab === Tab.LETTERS && (
-            <Letters documents={documents} />
+            <Letters
+              documents={documents}
+              onDelete={async (id) => {
+                await documentApi.delete(id);
+                setDocuments(prev => prev.filter(d => d.id !== id));
+              }}
+            />
           )}
 
           {activeTab === Tab.REPORTS && (

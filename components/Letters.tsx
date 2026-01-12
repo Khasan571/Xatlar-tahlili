@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { StoredDocument } from '../types';
 import AnalysisView from './AnalysisView';
-import { Eye, X, FileText, Calendar, Building, Hash, Search, Filter } from 'lucide-react';
+import { Eye, X, FileText, Calendar, Building, Hash, Search, Filter, Trash2 } from 'lucide-react';
 
 interface LettersProps {
   documents: StoredDocument[];
+  onDelete?: (id: string) => Promise<void>;
 }
 
-const Letters: React.FC<LettersProps> = ({ documents }) => {
+const Letters: React.FC<LettersProps> = ({ documents, onDelete }) => {
   const [viewingDoc, setViewingDoc] = useState<StoredDocument | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   // Filter documents based on search
   const filteredDocs = documents.filter(doc => {
@@ -98,12 +100,29 @@ const Letters: React.FC<LettersProps> = ({ documents }) => {
                                     </span>
                                 </td>
                                 <td className="px-6 py-4 text-right">
-                                    <button 
-                                        onClick={() => setViewingDoc(doc)}
-                                        className="bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white px-3 py-1.5 rounded-lg transition-colors flex items-center gap-2 ml-auto text-xs font-medium"
-                                    >
-                                        <Eye size={14} /> Tahlilni Ko'rish
-                                    </button>
+                                    <div className="flex items-center gap-2 justify-end">
+                                        <button
+                                            onClick={() => setViewingDoc(doc)}
+                                            className="bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white px-3 py-1.5 rounded-lg transition-colors flex items-center gap-2 text-xs font-medium"
+                                        >
+                                            <Eye size={14} /> Ko'rish
+                                        </button>
+                                        {onDelete && (
+                                            <button
+                                                onClick={async () => {
+                                                    if (confirm("Hujjatni o'chirishni tasdiqlaysizmi?")) {
+                                                        setDeletingId(doc.id);
+                                                        await onDelete(doc.id);
+                                                        setDeletingId(null);
+                                                    }
+                                                }}
+                                                disabled={deletingId === doc.id}
+                                                className="bg-red-50 text-red-600 hover:bg-red-600 hover:text-white px-3 py-1.5 rounded-lg transition-colors flex items-center gap-2 text-xs font-medium disabled:opacity-50"
+                                            >
+                                                <Trash2 size={14} /> {deletingId === doc.id ? "..." : "O'chirish"}
+                                            </button>
+                                        )}
+                                    </div>
                                 </td>
                             </tr>
                         ))
