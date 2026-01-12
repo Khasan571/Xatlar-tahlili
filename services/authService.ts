@@ -1,4 +1,8 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+// Production'da Render backend URL ishlatiladi
+const isProduction = import.meta.env.PROD;
+const API_BASE =
+  import.meta.env.VITE_API_BASE_URL ||
+  (isProduction ? 'https://xatlar-tahlili.onrender.com/api' : 'http://localhost:4000/api');
 
 export interface User {
   id: string;
@@ -42,7 +46,7 @@ export const authService = {
   },
 
   async login(username: string, password: string): Promise<AuthResponse> {
-    const res = await fetch(`${API_URL}/api/auth/login`, {
+    const res = await fetch(`${API_BASE}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
@@ -56,7 +60,7 @@ export const authService = {
   },
 
   async register(username: string, password: string, fullName?: string): Promise<AuthResponse> {
-    const res = await fetch(`${API_URL}/api/auth/register`, {
+    const res = await fetch(`${API_BASE}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password, fullName })
