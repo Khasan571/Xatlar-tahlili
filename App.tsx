@@ -69,6 +69,10 @@ const App: React.FC = () => {
 
   // Hierarchy load/save
   useEffect(() => {
+    if (!isAuthenticated) {
+      setIsLoadingHierarchy(false);
+      return;
+    }
     (async () => {
       try {
         const data = await hierarchyApi.get();
@@ -84,17 +88,21 @@ const App: React.FC = () => {
         setIsLoadingHierarchy(false);
       }
     })();
-  }, []);
+  }, [isAuthenticated]);
 
   useEffect(() => {
-    if (isLoadingHierarchy) return;
+    if (isLoadingHierarchy || !isAuthenticated) return;
     storageService.saveHierarchy(hierarchy);
     hierarchyApi.save(hierarchy).catch((err) => {
       console.error('Failed to save hierarchy', err);
     });
-  }, [hierarchy, isLoadingHierarchy]);
+  }, [hierarchy, isLoadingHierarchy, isAuthenticated]);
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      setIsLoadingTypes(false);
+      return;
+    }
     (async () => {
       try {
         const types = await letterTypeApi.list();
@@ -111,19 +119,23 @@ const App: React.FC = () => {
         setIsLoadingTypes(false);
       }
     })();
-  }, []);
+  }, [isAuthenticated]);
 
   useEffect(() => {
-    if (isLoadingTypes) return;
+    if (isLoadingTypes || !isAuthenticated) return;
     // save to local for offline
     storageService.saveLetterTypes(letterTypes);
     // push to API
     letterTypeApi.saveAll(letterTypes).catch((err) => {
       console.error('Failed to save letter types', err);
     });
-  }, [letterTypes, isLoadingTypes]);
+  }, [letterTypes, isLoadingTypes, isAuthenticated]);
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      setIsLoadingDocs(false);
+      return;
+    }
     (async () => {
       try {
         const docs = await documentApi.getAll();
@@ -135,7 +147,7 @@ const App: React.FC = () => {
         setIsLoadingDocs(false);
       }
     })();
-  }, []);
+  }, [isAuthenticated]);
   
   // Analysis State
   const [inputText, setInputText] = useState('');
