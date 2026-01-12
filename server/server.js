@@ -102,9 +102,10 @@ const authLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-app.use('/api/', generalLimiter);
-app.use('/api/auth/login', authLimiter);
-app.use('/api/auth/register', authLimiter);
+// Rate limiting - vaqtinchalik o'chirilgan (production uchun qayta yoqing)
+// app.use('/api/', generalLimiter);
+// app.use('/api/auth/login', authLimiter);
+// app.use('/api/auth/register', authLimiter);
 
 // ============ INPUT VALIDATION HELPERS ============
 const validateString = (value, minLen = 1, maxLen = 1000) => {
