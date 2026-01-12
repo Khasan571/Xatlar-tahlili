@@ -24,7 +24,13 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 // Allowed origins for CORS
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',')
-  : ['http://localhost:3000', 'http://localhost:5173', 'http://127.0.0.1:3000'];
+  : [
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'http://127.0.0.1:3000',
+      'https://xatlar-tahlili.vercel.app',
+      'https://xatlar-tahlili-khasan.vercel.app'
+    ];
 
 // SQLite database
 const dbPath = path.resolve(__dirname, '../data.db');
@@ -53,6 +59,16 @@ app.use(cors({
     if (!origin) return callback(null, true);
 
     if (NODE_ENV === 'development') {
+      return callback(null, true);
+    }
+
+    // Allow all vercel.app subdomains
+    if (origin && origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+
+    // Allow all onrender.com subdomains
+    if (origin && origin.endsWith('.onrender.com')) {
       return callback(null, true);
     }
 
