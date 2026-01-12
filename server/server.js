@@ -96,7 +96,7 @@ const generalLimiter = rateLimit({
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 daqiqa
-  max: 10, // 10 ta urinish
+  max: 50, // 50 ta urinish
   message: { error: "Juda ko'p urinish. 15 daqiqadan keyin urinib ko'ring." },
   standardHeaders: true,
   legacyHeaders: false,
